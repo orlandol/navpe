@@ -1,65 +1,88 @@
 
 #include <ctype.h>
 #include <stdio.h>
+#include <stdlib.h>
 #include <string.h>
 
-  typedef enum Commands {
-    quitNavpe = 1
-  } Commands;
+#include <conio.h>
 
-  size_t ReadCommandLine( char* destString, size_t destMaxLen );
-  unsigned ParseCommandLine( char* sourceString, size_t sourceMaxLen );
+#define KEY_BACKSPACE 8
+#define KEY_CTRLENTER 10
+#define KEY_ENTER 13
+#define KEY_LEFT 75
+#define KEY_RIGHT 77
+#define KEY_DEL 83
 
-  size_t ReadCommandLine( char* destString, size_t destMaxLen ) {
-    size_t destIndex = 0;
-    int inChar = '\0';
-
-    if( !(destString && destMaxLen) ) {
-      return 0;
-    }
-
-    printf( "navpe> " );
-
-    while( inChar != EOF ) {
-      inChar = getchar();
-
-      if( inChar == '\n' ) {
-        break;
-      }
-
-      if( isprint(inChar) && ((destIndex + 1) < destMaxLen) ) {
-        destString[destIndex++] = (char)inChar;
-      }
-    }
-    destString[destIndex] = '\0';
-
-    return destIndex;
-  }
-
-  unsigned ParseCommandLine( char* sourceString, size_t sourceMaxLen ) {
-    if( !(sourceString && sourceMaxLen) ) {
-      return 0;
-    }
-
-    if( strncmp(sourceString, "quit", sourceMaxLen) == 0 ) {
-      return quitNavpe;
-    }
-
-    return 0;
-  }
+/*
+ *  Main program
+ */
 
 int main( int argc, char* argv[] ) {
-  char navpeCommandLine[1024] = {};
-  size_t cmdLen;
-  unsigned command;
-
-  fflush( stdin );
+  char commandLine[1024] = {};
+  size_t commandLength = 0;
+  size_t commandPos = 0;
+  int ch;
 
   do {
-    cmdLen = ReadCommandLine(navpeCommandLine, sizeof(navpeCommandLine) - 1);
+    ch = _getch();
 
-    command = ParseCommandLine(navpeCommandLine, cmdLen);
-  } while( command != quitNavpe );
+    switch( ch ) {
+    case KEY_BACKSPACE:
+      if( commandLength && commandPos ) {
+        memmove( &commandLine[commandPos - 1],
+          &commandLine[commandPos], commandLength - commandPos );
+        commandLine[commandLength - 1] = '\0';
+        commandPos--;
+        commandLength--;
+        putchar( 8 );
+      }
+      break;
+
+    case KEY_ENTER:
+      printf( "\n" );
+      break;
+
+    case 0:
+    case 224:
+      ch = _getch();
+      switch( ch ) {
+      case KEY_LEFT:
+        if( commandPos ) {
+          commandPos--;
+        }
+        putchar( 8 );
+        break;
+
+      case KEY_RIGHT:
+        if( commandPos < commandLength ) { commandPos++; }
+        break;
+
+      case KEY_DEL:
+        if( commandLength && commandPos ) {
+          memmove( &commandLine[commandPos],
+            &commandLine[commandPos + 1], commandLength - commandPos - 1 );
+          commandLine[commandLength] = '\0';
+          commandPos--;
+          commandLength--;
+          putchar(8);
+        }
+        break;
+      }
+      break;
+
+    default:
+      if( isprint(ch) ) {
+        if( commandLength < sizeof(commandLine) ) {
+          commandLine[commandPos] = ch;
+          if( commandPos == commandLength ) { commandLength++; }
+          commandPos++;
+        }
+        putchar( ch );
+      }
+    }
+  } while( ch != KEY_ENTER  );
+
+  printf( "[%s]\n", commandLine );
 
   return 0;
 }

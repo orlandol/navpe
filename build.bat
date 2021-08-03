@@ -1,3 +1,3 @@
 @echo off
 if exist navpe.exe del navpe.exe
-tcc navpe.c -Wall
+tcc navpe.c -Wall -b
