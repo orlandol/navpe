@@ -4,85 +4,74 @@
 #include <stdlib.h>
 #include <string.h>
 
-#include <conio.h>
+#include <windows.h>
 
-#define KEY_BACKSPACE 8
-#define KEY_CTRLENTER 10
-#define KEY_ENTER 13
-#define KEY_LEFT 75
-#define KEY_RIGHT 77
-#define KEY_DEL 83
+/*
+ *  Console UI declarations
+ */
+
+typedef struct Console {
+  HANDLE buffer;
+} Console;
+
+Console* CreateConsoleInterface();
+void FreeConsoleInterface( Console** consoleVar );
+
+/*
+ *  Console UI implementation
+ */
+HANDLE stdoutHandle = INVALID_HANDLE_VALUE;
+HANDLE stdinHandle = INVALID_HANDLE_VALUE;
+
+HANDLE systemConsoleBuffer = INVALID_HANDLE_VALUE;
+
+Console* InitConsoleInterface() {
+  Console* newConsole = NULL;
+
+  newConsole = calloc(1, sizeof(Console));
+  if( newConsole == NULL ) { return NULL; }
+
+  stdoutHandle = GetStdHandle(STD_OUTPUT_HANDLE);
+  stdinHandle = GetStdHandle(STD_INPUT_HANDLE);
+
+  if( stdoutHandle == INVALID_HANDLE_VALUE ) { goto ErrorExit; }
+  if( stdinHandle == INVALID_HANDLE_VALUE ) { goto ErrorExit; }
+
+  return NULL;
+
+ErrorExit:
+  FreeConsoleInterface( &newConsole );
+  return NULL;
+}
+
+void FreeConsoleInterface( Console** consoleVar ) {
+  stdoutHandle = INVALID_HANDLE_VALUE;
+  stdinHandle = INVALID_HANDLE_VALUE;
+
+  if( consoleVar ) {
+    if( (*consoleVar) ) {
+    }
+    free( (*consoleVar) );
+    (*consoleVar) = NULL;
+  }
+}
 
 /*
  *  Main program
  */
 
+Console* display = NULL;
+
+void Cleanup() {
+  FreeConsoleInterface( &display );
+}
+
 int main( int argc, char* argv[] ) {
-  char commandLine[1024] = {};
-  size_t commandLength = 0;
-  size_t commandPos = 0;
-  int ch;
+  atexit( Cleanup );
 
-  do {
-    ch = _getch();
+  display = InitConsoleInterface();
 
-    switch( ch ) {
-    case KEY_BACKSPACE:
-      if( commandLength && commandPos ) {
-        memmove( &commandLine[commandPos - 1],
-          &commandLine[commandPos], commandLength - commandPos );
-        commandLine[commandLength - 1] = '\0';
-        commandPos--;
-        commandLength--;
-        putchar( 8 );
-      }
-      break;
-
-    case KEY_ENTER:
-      printf( "\n" );
-      break;
-
-    case 0:
-    case 224:
-      ch = _getch();
-      switch( ch ) {
-      case KEY_LEFT:
-        if( commandPos ) {
-          commandPos--;
-        }
-        putchar( 8 );
-        break;
-
-      case KEY_RIGHT:
-        if( commandPos < commandLength ) { commandPos++; }
-        break;
-
-      case KEY_DEL:
-        if( commandLength && commandPos ) {
-          memmove( &commandLine[commandPos],
-            &commandLine[commandPos + 1], commandLength - commandPos - 1 );
-          commandLine[commandLength] = '\0';
-          commandPos--;
-          commandLength--;
-          putchar(8);
-        }
-        break;
-      }
-      break;
-
-    default:
-      if( isprint(ch) ) {
-        if( commandLength < sizeof(commandLine) ) {
-          commandLine[commandPos] = ch;
-          if( commandPos == commandLength ) { commandLength++; }
-          commandPos++;
-        }
-        putchar( ch );
-      }
-    }
-  } while( ch != KEY_ENTER  );
-
-  printf( "[%s]\n", commandLine );
+  FreeConsoleInterface( &display );
 
   return 0;
 }
