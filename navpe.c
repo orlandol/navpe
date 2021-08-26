@@ -23,7 +23,16 @@ void FreeConsoleInterface( Console** consoleVar );
 HANDLE stdoutHandle = INVALID_HANDLE_VALUE;
 HANDLE stdinHandle = INVALID_HANDLE_VALUE;
 
-HANDLE systemConsoleBuffer = INVALID_HANDLE_VALUE;
+// Begin system buffer implementation
+// System buffer save/restore implementation
+// - Save system console buffer and parameters
+// - Change console parameters and run program
+// - Restore system console buffer and parameters
+//
+CHAR_INFO* systemBuffer = NULL;
+COORD systemDimensions = {};
+COORD systemCursorPos = {};
+// End system buffer implementation
 
 Console* InitConsoleInterface() {
   Console* newConsole = NULL;
@@ -32,15 +41,23 @@ Console* InitConsoleInterface() {
   if( newConsole == NULL ) { return NULL; }
 
   stdoutHandle = GetStdHandle(STD_OUTPUT_HANDLE);
-  stdinHandle = GetStdHandle(STD_INPUT_HANDLE);
-
   if( stdoutHandle == INVALID_HANDLE_VALUE ) { goto ErrorExit; }
+
+  stdinHandle = GetStdHandle(STD_INPUT_HANDLE);
   if( stdinHandle == INVALID_HANDLE_VALUE ) { goto ErrorExit; }
+
+  // Save system console buffer and parameters
 
   return NULL;
 
 ErrorExit:
+  stdoutHandle = INVALID_HANDLE_VALUE;
+  stdinHandle = INVALID_HANDLE_VALUE;
+
   FreeConsoleInterface( &newConsole );
+
+  // Restore system console buffer and parameters
+
   return NULL;
 }
 
@@ -50,6 +67,8 @@ void FreeConsoleInterface( Console** consoleVar ) {
 
   if( consoleVar ) {
     if( (*consoleVar) ) {
+      CloseHandle( (*consoleVar)->buffer );
+      (*consoleVar)->buffer = NULL;
     }
     free( (*consoleVar) );
     (*consoleVar) = NULL;
@@ -60,18 +79,21 @@ void FreeConsoleInterface( Console** consoleVar ) {
  *  Main program
  */
 
-Console* display = NULL;
+Console* activeConsole = NULL;
+Console* secondaryConsole = NULL;
 
 void Cleanup() {
-  FreeConsoleInterface( &display );
+  FreeConsoleInterface( &activeConsole );
+
+  // Restore system console buffer and parameters
 }
 
 int main( int argc, char* argv[] ) {
   atexit( Cleanup );
 
-  display = InitConsoleInterface();
+  activeConsole = InitConsoleInterface();
 
-  FreeConsoleInterface( &display );
+  FreeConsoleInterface( &activeConsole );
 
   return 0;
 }
