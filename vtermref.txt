@@ -1,0 +1,45 @@
+
+=======================
+Win32 Console Reference
+-----------------------
+  Updated: 2021-08-29
+=======================
+
+A reference for Psueodconsole (virtual terminal) API calls,
+  intended to be clear and self-contained.
+
+Sources: Microsoft Docs > Console Developer's guide & API
+  Reference > Console API Functions > ...
+https://docs.microsoft.com/en-us/windows/console/console-functions
+
+------------------------------------------------
+void WINAPI ClosePseudoConsole( _In_ HPCON hPC )
+------------------------------------------------
+
+Closes the specified virtual console, and terminates
+  applications attached to the session.
+
+A final painted frame on the handle returned by
+  CreatePseudoConsole must be either discarded or presented.
+  If not, ClosePseudoConsole may wait indefinitely until
+  drained or the communication channels are broken another way.
+
+--------------------------------------------------------------
+HRESULT WINAPI CreatePseudoConsole( _In_ COORD size,
+  _In_ HANDLE hInput, _In_ HANDLE hOutput, _In_ DWORD dwFlags,
+  _Out_ HPCON* phPC )
+--------------------------------------------------------------
+
+[Pending]
+
+Creates a new virtual terminal object.
+
+Parameters
+- size: 
+- hInput: 
+- hOutput: 
+- dwFlags: 
+- phPC: 
+
+Returns S_OK on success.
+
