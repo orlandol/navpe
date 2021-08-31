@@ -17,7 +17,7 @@ BOOL WINAPI AddConsoleAlias( _In_ LPCTSTR Source,
   _In_ LPCTSTR Target, _In_ LPCTSTR ExeName )
 -------------------------------------------------
 
-Defines a command alias equivalent to Source = ExeName Target
+Defines a command macro, equivalent to Source = ExeName Target
 
 Returns FALSE (0) on error.
 
@@ -210,5 +210,32 @@ A process can be attached to at most one console.
 -------------------------------------------------------------
 BOOL WINAPI GenerateConsoleCtrlEvent( _In_ DWORD dwCtrlEvent,
   _In_ DWORD dwProcessGroupId )
+-------------------------------------------------------------
+
+Sends a control signal to a console process group, which share
+  the calling process console, resulting in each process control
+  handler to be called.
+
+The default console process handler calls ExitProcess, and can
+  be overriden with SetConsoleCtrlHandler. SetConsoleCtrlHandler
+  can set an inheritable override to ignore CTRL+C signals.
+  CTRL+BREAK always causes the handler functions to call.
+
+Parameters
+- dwCtrlEvent: Specifies the signal to generate of either
+  CTRL_C_EVENT (0), or CTRL_BREAK_EVENT (1).
+- dwProcessGroupId: The process group identifier when the
+  CREATE_NEW_PROCESS_GROUP flag is specified in function
+  CreateProcess. When zero (0), the signal is generated in all
+  processes that share the calling process console. If a process
+  in the group creates a new console, neither it nor its
+  descendants receives the signal.
+
+Returns FALSE (0) on error.
+
+-------------------------------------------------------------
+DWORD WINAPI GetConsoleAlias( _In_ LPTSTR lpSource,
+  _Out_ LPTSTR lpTargetBuffer, _In_ DWORD TargetBufferLength,
+  _In_ LPTSTR lpExeName )
 -------------------------------------------------------------
 
