@@ -239,3 +239,72 @@ DWORD WINAPI GetConsoleAlias( _In_ LPTSTR lpSource,
   _In_ LPTSTR lpExeName )
 -------------------------------------------------------------
 
+Retrieves the specified command macro, equivalent
+  to ExeName Target = Source?
+
+Parameters
+- lpSource: Macro alias to retrieve.
+- lpTargetBuffer: Destination buffer to recieve the command
+  macro target (and lpExeName?).
+- TargetBufferLength: lpTargetBuffer max length.
+- lpExeName: Executable name (typically cmd.exe?).
+
+Returns FALSE (0) on error.
+
+-----------------------------------------------------------
+DWORD WINAPI GetConsoleAliases( _Out_ LPTSTR lpAliasBuffer,
+  _In_ DWORD AliasBufferLength, _In_ LPTSTR lpExeName )
+-----------------------------------------------------------
+
+Returns 0 on error.
+
+-------------------------------------------------------------
+DWORD WINAPI GetConsoleAliasesLength( _In_ LPTSTR lpExeName )
+-------------------------------------------------------------
+
+Returns size of the buffer that holds all command macros
+  associated with lpExeName.
+
+---------------------------------------------------------------
+DWORD WINAPI GetConsoleAliasExes( _Out_ LPTSTR lpExeNameBuffer,
+  _In_ DWORD ExeNameBufferLength )
+---------------------------------------------------------------
+
+Returns 0 on error.
+
+----------------------------------------------
+DWORD WINAPI GetConsoleAliasExesLength( void )
+----------------------------------------------
+
+Returns size in bytes of the buffer that holds all defined exe
+  command macros.
+
+----------
+Code Pages
+----------
+
+Select Code Page Identifiers
+- 437: IBM437, OEM United States
+- 850: ibm850, OEM Multilingual Latin 1; Western European (DOS)
+- 852: ibm852, OEM Latin 2; Central European (DOS)
+- 1200: utf-16, Unicode UTF-16, little endian byte order (BMP of
+  ISO 10646); available only to managed applications
+- 1201: unicodeFFFE, Unicode UTF-16, big endian byte order;
+  available only to managed applications
+- 1252: windows-1252, ANSI Latin 1; Western European (Windows)
+- 10029: x-mac-ce, MAC Latin 2; Central European (Mac)
+- 12000: utf-32, Unicode UTF-32, little endian byte order;
+  available only to managed applications
+- 12001: utf-32BE, Unicode UTF-32, big endian byte order;
+  available only to managed applications
+- 20127: us-ascii, US-ASCII (7-bit)
+- 65000: utf-7, Unicode (UTF-7)
+- 65001: utf-8, Unicode (UTF-8)
+
+Additional Code Page Identifiers:
+https://docs.microsoft.com/en-us/windows/win32/intl/code-page-identifiers
+
+--------------------------------
+UINT WINAPI GetConsoleCP( void )
+--------------------------------
+
