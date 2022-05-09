@@ -2,7 +2,7 @@
 =======================
 Win32 Console Reference
 -----------------------
-  Updated: 2021-08-29
+  Updated: 2022-05-08
 =======================
 
 A reference for Win32 Console API calls, intended to be
@@ -115,21 +115,23 @@ Returns INVALID_HANDLE_VALUE on error.
 Text (Character) Attributes
 ---------------------------
 
-FOREGROUND_BLUE: Text color contains blue.
-FOREGROUND_GREEN: Text color contains green.
-FOREGROUND_RED: Text color contains red.
-FOREGROUND_INTENSITY: Text color is intensified.
-BACKGROUND_BLUE: Background color contains blue.
-BACKGROUND_GREEN: Background color contains green.
-BACKGROUND_RED: Background color contains red.
-BACKGROUND_INTENSITY: Background color is intensified.
-COMMON_LVB_LEADING_BYTE: Leading byte.
-COMMON_LVB_TRAILING_BYTE: Trailing byte.
-COMMON_LVB_GRID_HORIZONTAL: Top horizontal.
-COMMON_LVB_GRID_LVERTICAL: Left vertical.
-COMMON_LVB_GRID_RVERTICAL: Right vertical.
-COMMON_LVB_REVERSE_VIDEO: Reverse foreground and background.
-COMMON_LVB_UNDERSCORE: Underscore.
+FOREGROUND_BLUE (0x1): Text color contains blue.
+FOREGROUND_GREEN (0x2): Text color contains green.
+FOREGROUND_RED (0x4): Text color contains red.
+FOREGROUND_INTENSITY (0x8): Text color is intensified.
+BACKGROUND_BLUE (0x10): Background color contains blue.
+BACKGROUND_GREEN (0x20): Background color contains green.
+BACKGROUND_RED (0x40): Background color contains red.
+BACKGROUND_INTENSITY (0x80): Background color is intensified.
+COMMON_LVB_LEADING_BYTE (0x100): Leading byte.
+COMMON_LVB_TRAILING_BYTE (0x200): Trailing byte.
+COMMON_LVB_GRID_HORIZONTAL (0x400): Top horizontal.
+COMMON_LVB_GRID_LVERTICAL (0x800): Left vertical.
+COMMON_LVB_GRID_RVERTICAL (0x1000): Right vertical.
+COMMON_LVB_REVERSE_VIDEO (0x4000): Reverse foreground and background.
+COMMON_LVB_UNDERSCORE (0x8000): Underscore.
+
+Values Source: wincon.h (MinGW w32api; tcc)
 
 ---------------------------------------------------
 BOOL WINAPI FillConsoleOutputAttribute(

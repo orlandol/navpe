@@ -2,7 +2,7 @@
 =======================
 Win32 Console Reference
 -----------------------
-  Updated: 2021-08-29
+  Updated: 2022-05-08
 =======================
 
 A reference for Psueodconsole (virtual terminal) API calls,
@@ -25,21 +25,334 @@ A final painted frame on the handle returned by
   drained or the communication channels are broken another way.
 
 --------------------------------------------------------------
+Console Virtual Terminal Sequences
+--------------------------------------------------------------
+
+Source: Console Developer's guide & API Reference
+  > Using The Console API > Console Virtual Terminal Sequences
+https://docs.microsoft.com/en-us/windows/console/console-virtual-terminal-sequences
+
+Console Virtual Terminal Sequences are interpreted when the
+  ENABLE_VIRTUAL_TERMINAL_PROCESSING (4) flag is set on the screen
+  buffer using SetConsoleMode.
+
+Specifying the DISABLE_NEWLINE_AUTO_RETURN to SetConsoleMode may be
+  useful in emulating the cursor positioning and scrolling behavior
+  of other terminal emulators for characters written on the last
+  column (x) of any row (line/y).
+
+ESC (always 0x1B) starts the terminal sequence where referenced below.
+  Spaces are included below for clarity. In practice, terminal sequences
+  must be consecutive. Characters in the sequences below are to be used
+  as-is, and variables are to be substituted when specified.
+
+===============================
+== Simple Cursor Positioning ==
+
+ESC M = Reverse Index (RI): Moves cursor up one line on newline (\n)
+  while maintaining horizontal position. Scrolls buffer within the
+  specified scroll margins, leaving the viewport unchanged.
+ESC 7 = Save Cursor Position in Memory (DECSC): Saves the cursor
+  position. By default, no value is in memory before the first use.
+ESC 8 = Restore Cursor Position from Memory (DECSR): Restores the
+  cursor position, only if previously saved.
+
+========================
+== Cursor Positioning ==
+
+Generally equivalent to calling SetConsoleCursorPosition.
+
+ESC [ n A = Cursor Up (CUU): Move cursor up by n.
+ESC [ n B = Cursor Down (CUD): Move cursor down by n.
+ESC [ n C = Cursor Forward (CUF): Move cursor right by n.
+ESC [ n D = Cursor Backward (CUB): Move cursor left by n.
+ESC [ n E = Cursor Next Line (CNL): Increment current position
+  by n lines down.
+ESC [ n F = Cursor Previous Line (CPL): Decrement current position
+  by n lines up.
+ESC [ n G = Cursor Horizontal Absolute (CHA): Move cursor horizontally
+  to the nth position.
+ESC [ n d = Cursor Vertical Line Position Absolute (VPA): Move cursor
+  vertically to the nth position.
+ESC [ y ; x H = Cursor Position (CUP): Move cursor to coordinates
+  y (row) and x (column) within the viewport.
+ESC [ y ; x f = Horizontal Vertical Position (HVP): Move cursor to
+  coordinates y (row) and x (column) within the viewport.
+ESC [ s = Save Cursor (ANSISYSSC; ANSI.SYS emulation): Saves the cursor
+  position. By default, no value is in memory before the first use.
+ESC [ u = Restore Cusror (ANSISYSSC; ANSI.SYS emulation): Restores the
+  cursor position, only if previously saved.
+
+n represents the distance to move, and is optional. By default, or if 0
+  is specified, its value will be interpreted as 1. Max value is 32767.
+  Cannot be negative.
+
+x or y, either by default or if 0 is specified, is interpreted as 1. Max
+  value for either x or y is 32767. Neither can be negative.
+
+Cursor movement is bounded by the current viewport, and doesn't scroll.
+
+Historical documentation on the ANSI.SYS MS-DOS terminal emulation driver:
+https://docs.microsoft.com/en-us/previous-versions/tn-archive/cc722862(v=technet.10)?redirectedfrom=MSDN
+
+=======================
+== Cursor Visibility ==
+
+Equivalent to calling SetConsoleCursorInfo.
+
+ESC [ ? 12 h = Text Cursor Enable Blinking (ATT160):
+  Start the cursor blinking.
+ESC [ ? 12 l = Text Cursor Disable Blinking (ATT160):
+  Stop blinking the cursor.
+ESC [ ? 25 h = Text Cursor Enable Mode Show (DECTCEM):
+  Show the cursor.
+ESC [ ? 25 l = Text Cursor Enable Mode Hide (DECTCEM):
+  Hide the cursor.
+
+The h suffix enables. The l (lowercase L) suffix disables.
+
+==========================
+== Viewport Positioning ==
+
+Equivalent to calling ScrollConsoleScreenBuffer.
+
+ESC [ n S = Scroll Up (SU): Partially scrolls text up by n rows,
+  starting at the current row. Fills blank lines below the text
+  that moved. Affected by scrolling margins.
+ESC [ n T = Scroll Down (SD): Partially scrolls text down by n rows,
+  starting at the current row. Fills blank lines above the text
+  that moved. Affected by scrolling margins.
+
+n is optional. If omitted, the default value of n is 1.
+
+=======================
+== Text Modification ==
+
+Generally equivalent to calling FillConsoleOutputCharacter,
+  FillConsoleOutputAttribute, and ScrollConsoleScreenBuffer.
+
+ESC [ n @ = Insert Character (ICH): Insert n spaces. Removes text
+  that is pushed offscreen.
+ESC [ n P = Delete Character (DCH): Delete n characters. Fills trailing
+  text with spaces.
+ESC [ n X = Erase Character (ECH): Overwrite n characters, from the
+  current cusror position, with space characters.
+ESC [ n L = Insert Line (IL): Lines at, and below, the current row
+  are shifted downwards by n lines. Lines shifted past scrolling margins
+  smaller than the viewport are discarded. Lines past the viewport are
+  unaffected.
+ESC [ n M = Delete Line (DL): Delete n lines from the buffer, at and
+  below the current row. Blank lines are inserted at the bottom of the
+  margins, if the scrolling margins are smaller than the viewport.
+  Lines past the viewport are unaffected.
+
+n is optional, and defaults to 0 if omitted.
+
+ESC [ n J = Erase in Display (ED): Replace lines in the current
+  viewport/screen with space characters, using method n.
+  Method 0 erases from current position, to line end.
+  Method 1 erases from the beginning of the line, to the character
+    before the current position.
+  Method 2 erases the entire line.
+ESC [ n K = Erase in Line (EL): Replace text in the current row
+  with spaces using method n.
+  Method 0 erases from the current cursor position, to end of display.
+  Method 1 erases from the first display row, to the row before the
+    current row.
+  Method 2 erases the entire display.
+
+=====================
+== Text Formatting ==
+
+Generally equivalent to calling SetConsoleTextAttribute for subsequent
+  wreites to the console output text buffer.
+
+ESC [ n m = Set Graphics Rendition (SGR): Format text as specified by n.
+
+If omitted, n defaults to 0 which resets all attributes. Up to 16
+  values can be specified, separated by semicolons (;).
+
+Color attributes listed are named according to their defaults. If the
+  console color table is modified using SetconsoleScreenBufferInfoEx,
+  the name may not match the modified RGB value.
+
+Attributes of n
+Default (0): Reset all attributes.
+Bold/Bright (1): Sets the foreground color intensity flag.
+No bold/bright (22): Removes the foreground color intensity flag.
+Underline (4): Adds underlines.
+No underline (24): Removes underlines.
+Negative (7): Swaps foreground and background colors.
+No negative (27): Restores foreground/background colors.
+
+Foreground colors of n
+Set Default (39)
+Black (30)
+Red (31)
+Green (32)
+Yellow (33)
+Blue (34)
+Magenta (35)
+Cyan (36)
+White (37)
+Bright Black (90)
+Bright Red (91)
+Bright Green (92)
+Bright Yellow (93)
+Bright Blue (94)
+Bright Magenta (95)
+Bright Cyan (96)
+Bright White (97)
+
+Background colors of n
+Set Default (49)
+Black (40)
+Red (41)
+Green (42)
+Yellow (43)
+Blue (44)
+Magenta (45)
+Cyan (46)
+White (47)
+Bright Black (100)
+Bright Red (101)
+Bright Green (102)
+Bright Yellow (103)
+Bright Blue (104)
+Bright Magenta (105)
+Bright Cyan (106)
+Bright White (107)
+
+Extended Colors of n
+38 ; 2 ; r ; g ; b = Set foreground color to RGB value.
+38 ; 5 ; s = Set foreground color to palette index(?).
+48 ; 2 ; r ; g ; b = Set background color to RGB value.
+48 ; 5 ; s = Set background color to palette index(?).
+
+The 88 nad 256 color palettes maintained internally for comparison
+  are based on the xterm terminal emulator, and currently cannot be
+  modified.
+
+===================
+== Screen Colors ==
+
+Operating system command (OSC) sequence to set a custom RGB value.
+
+ESC ] 4 ; i ; rgb: r / g / b <ST>
+
+r / g / b are interpreted as hex values.
+
+<ST> represents the String Terminator two character sequence of
+  ESC \ (0x1B 0x5C) (?); Which is preferred over the BEL (0x7) value.
+
+==================
+== Mode Changes ==
+
+ESC = = Enable Keypad Application Mode (DECKPAM): Keypad keys will
+  emit their regular counterpart key code sequences.
+ESC > = Enable Keypad Numeric Mode (DECKPNM): Keypad keys will emit
+  their default numeric key sequences.
+ESC [ ? 1 h = Enable Cursor Keys Application Mode (DECCKM): Keypad
+  keys will emit their regular counterpart key code sequences.
+ESC [ ? 1 l = Disable Cursor Keys Application Mode (DECCKM; use
+  Normal Mode): Keypad keys will emit their default numeric key
+  sequences.
+
+=================
+== Query State ==
+
+Equivalent to their Get counterpart console APIs.
+
+ESC [ 6 n = Report Cursor Position (DECXCPR): Emit cursor row and
+  column position as ESC [ r; c R
+ESC [ 0 c = Device Attributes (DA): Report the terminal identity.
+  Emits ESC [ ? 1 ; 0 c indicating "VT101 with No Options".
+
+When ENABLE_VIRTUAL_TERMINAL_PROCESSING is set, responses to queries
+  will be sent to the console input stream upon being recognized on
+  the output stream.
+
+The ENABLE_VIRTUAL_TERMINAL_INPUT flag doesn't apply to queries on the
+  assumption that the querying application always expectes a response.
+
+==========
+== Tabs ==
+
+ESC H = Horizontal Tab Set (HTS): Sets a tab stop on the cursor column.
+  Navigates to the next tab stop on TAB (0x09, '\t') like CHT.
+ESC [ n I = Cursor Horizontal [Forward] Tab (CHT): Advance the cursor
+  to the next column with a tab stop. Move to the last column in the
+  row if no further tab stops. Move to the first column of the next row
+  if the cursor is on the last column.
+ESC [ n Z = Cursor Backwards Tab (CBT): Move the cursor to the previous
+  column with a tab stop. Move to the first column if no further tab
+  stops. Don't move the cursor if on the first column.
+
+n is optional, and defaults to 1 if omitted.
+
+ESC [ 0 g = Tab Clear (TBC; Current Column): Clears the tab stop in the
+  current column if set.
+ESC [ 3 g = Tab Clear (TBC; All Columns): Clears all defined tab stops.
+
+=============================
+== Designate Character Set ==
+
+ESC ( 0 = Designate Character Set - DEC Line Drawing
+ESC ( B = Designate Character Set - US [7-bit] ASCII (default)
+
+Currently only supports ASCII (default) or the DEC Special Graphics
+  Character Set (https://vt100.net/docs/vt220-rm/chapter2.html#T2-4).
+
+ASCII Mode Characters By Hex Value
+0x6a: j
+0x6b: k
+0x6c: l (lowercase L)
+0x6d: m
+0x6e: n
+0x71: q
+0x74: t
+0x75: u
+0x76: v
+0x77: w
+0x78: x
+
+DEC Line Drawing Mode Characters By Hex Value
+0x6a: Bottom-right corner
+0x6b: Top-right corner
+0x6c: Top-Left corner
+0x6d: Bottom-Left corner
+0x6e: Two intersecting lines
+0x71: Horizontal line
+0x74: Left T connector
+0x75: Right T connector
+0x76: Bottom T connector
+0x77: Top T connector
+0x78: Vertical line
+
+--------------------------------------------------------------
 HRESULT WINAPI CreatePseudoConsole( _In_ COORD size,
   _In_ HANDLE hInput, _In_ HANDLE hOutput, _In_ DWORD dwFlags,
   _Out_ HPCON* phPC )
 --------------------------------------------------------------
 
-[Pending]
+Creates a new Pseudoconsole (virtual terminal) object.
 
-Creates a new virtual terminal object.
+Primarily used by command-line user interface (CUI) application windows
+  that act as terminal windows.
+
+The application is responsible for presentation to the output stream.
+  The application is also responsible for collecting user input, and
+  serializing it into the input stream. Input and output streams are
+  a combination of UTF-8 plain text and Virtual Terminal sequences.
 
 Parameters
-- size: 
-- hInput: 
-- hOutput: 
-- dwFlags: 
-- phPC: 
+- size: Windows/buffer width and height in character units. Can
+    later be adjusted with ResizePseudoConsole.
+- hInput: Synchronus I/O handle to a stream of user input device data.
+- hOutput: Synchronus I/O stream handle to application output device data.
+- dwFlags: PSEUDOCONSOLE_INHERIT_CURSOR ((DWORD)1) attempts to inherit the
+    parent console's cursor position.
+- phPC: Pointer to new pseudoconsole device handle.
 
 Returns S_OK on success.
 
