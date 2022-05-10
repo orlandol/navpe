@@ -2,7 +2,7 @@
 =======================
 Win32 Console Reference
 -----------------------
-  Updated: 2022-05-08
+  Updated: 2022-05-09
 =======================
 
 A reference for Psueodconsole (virtual terminal) API calls,
@@ -329,6 +329,150 @@ DEC Line Drawing Mode Characters By Hex Value
 0x77: Top T connector
 0x78: Vertical line
 
+=======================
+== Scrolling Margins ==
+
+Useful for limiting what part of the screen is modified by scrolling,
+  such as the area between the title bar and status bar.
+
+ESC [ t ; b r = Set Scrolling Region (DECSTBM): Sets the VT scrolling
+  margins of the viewport. t (top row) and b (bottom row) are optional.
+  If omitted, t defaults to 1. If omitted, b defaults to the viewport
+  height.
+
+Scrolling margins are per buffer. The Altrnate Buffer scrolling margins
+  should be separate from the Main Buffer, to prevent from affecting
+  the Main Buffer's margins.
+
+==================
+== Window Title ==
+
+Operating System Command (OSC) sequence to set the console window title.
+
+ESC ] 0 ; "..." <ST> = Set Window Title
+ESC ] 2 ; "..." <ST> = Set Window Title
+
+<ST> represents the String Terminator. For this command, the
+  terminator is the BEL (0x7) value.
+
+=============================
+== Alternate Screen Buffer ==
+
+ESC [ ? 1 0 4 9 h = Use Alternate Screen Buffer: Switches to a new
+  alternate screen buffer.
+ESC [ ? 1 0 4 9 l = Use Main Screen Buffer: Switches to the main buffer.
+
+*nix style applications often use an alternate screen buffer, so they
+  can modify the entire contents of the buffer, without affecting the
+  application that started them.
+
+The Alternate Buffer has the exact same dimensions as the Main Buffer,
+  without any scrollback region.
+
+As an example, when vim is launched from bash, vim uses the entire
+  screen while it's running. On exit, the contents of bash's screen
+  buffer are restored.
+
+==================
+== Window Width ==
+
+Sets the console width to 132 or 80 characters.
+
+ESC [ ? 3 h = Set Number of Columns to 132 (DECCOLM)
+ESC [ ? 3 l = Set Number of Columns to 80 (DECCOLM)
+
+Roughly equivalent to calling SetConsoleScreenBufferInfoEx.
+
+================
+== Soft Reset ==
+
+ESC [ ! p = Soft Reset (DECSTR): Reset certain terminal settings to
+  their defaults.
+
+Default settings restored:
+Cursor is set to visible (DECTEM)
+Numeric Keypad writes numeric key sequences (DECNKM)
+Cursor Keys write their default sequences (DECCKM)
+Top margin is reset to 1 (DECSTBM)
+Bottom margin is set to console height (DECSTBM)
+Character Set reverts to US ASCII
+Graphics Rendition is set to off (SGR)
+Cursor state is set to Home position (0, 0) (DECSC)
+
+=====================
+== Input Sequences ==
+
+Terminal input sequences are emitted to the input stream if the
+  ENABLE_VIRTUAL_TERMINAL_INPUT flag is set on the input buffer using
+  SetConsoleMode.
+
+Normal Mode Cursor Keys
+Up Arrow: ESC [ A
+Down Arrow: ESC [ B
+Right Arrow: ESC [ C
+Left Arrow: ESC [ D
+Home: ESC [ H
+End: ESC [ F
+
+Application Mode Cusror Keys
+Up Arrow: ESC O A
+Down Arrow: ESC O B
+Right Arrow: ESC O C
+Left Arrow: ESC O D
+Home: ESC O H
+End: ESC O F
+
+Ctrl + Cursor Keys in either Normal or Application Mode
+Ctrl + Up Arrow: ESC [ 1 ; 5 A
+Ctrl + Down Arrow: ESC [ 1 ; 5 B
+Ctrl + Right Arrow: ESC [ 1 ; 5 C
+Ctrl + Left Arrow: ESC [ 1 ; 5 D
+
+Numpad and Function Keys
+Backspace: 0x7f (DEL)
+Pause: 0x1a (SUB)
+Escape: 0x1b (ESC)
+Insert: ESC [ 2 ~
+Delete: ESC [ 3 ~
+Page Up: ESC [ 5 ~
+Page Down: ESC [ 6 ~
+F1: ESC O P
+F2: ESC O Q
+F3: ESC O R
+F4: ESC O S
+F5: ESC [ 1 5 ~
+F6: ESC [ 1 7 ~
+F7: ESC [ 1 8 ~
+F8: ESC [ 1 9 ~
+F9: ESC [ 2 0 ~
+F10: ESC [ 2 1 ~
+F11: ESC [ 2 3 ~
+F12: ESC [ 2 4 ~
+
+Modifiers - Special cases of Alt + Ctrl
+Ctrl + Space: 0x00 (NUL)
+Ctrl + Up Arrow: ESC [ 1 ; 5 A
+Ctrl + Down Arrow: ESC [ 1 ; 5 B
+Ctrl + Right Arrow: ESC [ 1 ; 5 C
+Ctrl + Left Arrow: ESC [ 1 ; 5 D
+
+Notes on Modifiers
+Alt is treated by prefixing the sequence with an escape: ESC c where
+  c is the character passed by the operating system. Alt + Ctrl is
+  handled the same way, except that the operating system pre-shifts
+  c key to the appropriate control character, which is then relayed
+  to the application.
+
+Ctrl is generally passed through exactly as received fromt he system.
+  This is typically a single character shifted down into the control
+  chjaracter reserved space (0x0 - 0x1f). For example: Ctrl + * (0x40)
+  becomes NUL (0x00); Ctrl + [ (0x5b) becomes ESC (0x1b); etc.
+
+Left Ctrl + Right Alt is treated as AltGr. When both are together, the
+  system strips Ctrl and Alt, then passes the Unicode value of the
+  character to the target. The system pre-translates AltGr values
+  according to the current system input settings.
+
 --------------------------------------------------------------
 HRESULT WINAPI CreatePseudoConsole( _In_ COORD size,
   _In_ HANDLE hInput, _In_ HANDLE hOutput, _In_ DWORD dwFlags,
@@ -355,4 +499,10 @@ Parameters
 - phPC: Pointer to new pseudoconsole device handle.
 
 Returns S_OK on success.
+
+---------------------------------------------------------------------
+HRESULT WINAPI ResizePseudoConsole( _In_ HPCON hPC, _In_ COORD size )
+---------------------------------------------------------------------
+
+[Pending]
 

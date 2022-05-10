@@ -2,7 +2,7 @@
 =======================
 Win32 Console Reference
 -----------------------
-  Updated: 2022-05-08
+  Updated: 2022-05-09
 =======================
 
 A reference for Win32 Console API calls, intended to be
@@ -258,11 +258,15 @@ DWORD WINAPI GetConsoleAliases( _Out_ LPTSTR lpAliasBuffer,
   _In_ DWORD AliasBufferLength, _In_ LPTSTR lpExeName )
 -----------------------------------------------------------
 
+[Pending]
+
 Returns 0 on error.
 
 -------------------------------------------------------------
 DWORD WINAPI GetConsoleAliasesLength( _In_ LPTSTR lpExeName )
 -------------------------------------------------------------
+
+[Pending]
 
 Returns size of the buffer that holds all command macros
   associated with lpExeName.
@@ -271,6 +275,8 @@ Returns size of the buffer that holds all command macros
 DWORD WINAPI GetConsoleAliasExes( _Out_ LPTSTR lpExeNameBuffer,
   _In_ DWORD ExeNameBufferLength )
 ---------------------------------------------------------------
+
+[Pending]
 
 Returns 0 on error.
 
@@ -309,4 +315,189 @@ https://docs.microsoft.com/en-us/windows/win32/intl/code-page-identifiers
 --------------------------------
 UINT WINAPI GetConsoleCP( void )
 --------------------------------
+
+[Pending]
+
+-------------------------------------------------------------
+BOOL WINAPI GetConsoleCursorInfo( _In_ HANDLE hConsoleOutput,
+  _Out_ PCONSOLE_CURSOR_INFO lpConsoleCursorInfo )
+-------------------------------------------------------------
+
+[Pending]
+
+--------------------------------------------------------------
+BOOL WINAPI GetConsoleDisplayMode( _Out_ LPDWORD lpModeFlags )
+--------------------------------------------------------------
+
+[Pending]
+
+------------------------------------------------------------
+COORD WINAPI GetConsoleFontSize( _In_ HANDLE hConsoleOutput,
+  _In_ DWORD  nFont )
+------------------------------------------------------------
+
+[Pending]
+
+----------------------------------------------------
+BOOL WINAPI GetConsoleHistoryInfo(
+  _Out_ PCONSOLE_HISTORY_INFO lpConsoleHistoryInfo )
+----------------------------------------------------
+
+[Pending]
+
+---------------------------------------------------------
+BOOL WINAPI GetConsoleMode( _In_  HANDLE  hConsoleHandle,
+  _Out_ LPDWORD lpMode )
+---------------------------------------------------------
+
+[Pending]
+
+------------------------------------------------------------------
+DWORD WINAPI GetConsoleOriginalTitle( _Out_ LPTSTR lpConsoleTitle,
+  _In_  DWORD  nSize )
+------------------------------------------------------------------
+
+[Pending]
+
+--------------------------------------
+UINT WINAPI GetConsoleOutputCP( void )
+--------------------------------------
+
+[Pending]
+
+------------------------------------------------------------------
+DWORD WINAPI GetConsoleProcessList( _Out_ LPDWORD lpdwProcessList,
+  _In_ DWORD dwProcessCount )
+------------------------------------------------------------------
+
+[Pending]
+
+-------------------------------------------------------------------
+BOOL WINAPI GetConsoleScreenBufferInfo( _In_ HANDLE hConsoleOutput,
+  _Out_ PCONSOLE_SCREEN_BUFFER_INFO lpConsoleScreenBufferInfo )
+-------------------------------------------------------------------
+
+[Pending]
+
+---------------------------------------------------------------------
+BOOL WINAPI GetConsoleScreenBufferInfoEx( _In_ HANDLE hConsoleOutput,
+  _Out_ PCONSOLE_SCREEN_BUFFER_INFOEX lpConsoleScreenBufferInfoEx )
+---------------------------------------------------------------------
+
+[Pending]
+
+--------------------------------------------------------
+BOOL WINAPI GetConsoleSelectionInfo(
+  _Out_ PCONSOLE_SELECTION_INFO lpConsoleSelectionInfo )
+--------------------------------------------------------
+
+[Pending]
+
+----------------------------------------------------------
+DWORD WINAPI GetConsoleTitle( _Out_ LPTSTR lpConsoleTitle,
+  _In_ DWORD nSize )
+----------------------------------------------------------
+
+[Pending]
+
+------------------------------------
+HWND WINAPI GetConsoleWindow( void )
+------------------------------------
+
+[Pending]
+
+----------------------------------------------------------------------
+BOOL WINAPI GetCurrentConsoleFont( _In_ HANDLE hConsoleOutput, _In_
+  BOOL bMaximumWindow, _Out_ PCONSOLE_FONT_INFO lpConsoleCurrentFont )
+----------------------------------------------------------------------
+
+[Pending]
+
+----------------------------------------------------------------
+BOOL WINAPI GetCurrentConsoleFontEx( _In_ HANDLE hConsoleOutput,
+  _In_ BOOL bMaximumWindow, _Out_ PCONSOLE_FONT_INFOEX
+  lpConsoleCurrentFontEx )
+----------------------------------------------------------------
+
+[Pending]
+
+----------------------------------------------------------------------
+COORD WINAPI GetLargestConsoleWindowSize( _In_ HANDLE hConsoleOutput )
+----------------------------------------------------------------------
+
+[Pending]
+
+---------------------------------------------------------------------
+BOOL WINAPI GetNumberOfConsoleInputEvents( _In_ HANDLE hConsoleInput,
+  _Out_ LPDWORD lpcNumberOfEvents )
+---------------------------------------------------------------------
+
+[Pending]
+
+-------------------------------------------
+BOOL WINAPI GetNumberOfConsoleMouseButtons(
+  _Out_ LPDWORD lpNumberOfMouseButtons )
+-------------------------------------------
+
+[Pending]
+
+---------------------------------------------------
+HANDLE WINAPI GetStdHandle( _In_ DWORD nStdHandle )
+---------------------------------------------------
+
+[Pending]
+
+---------------------------------------------------
+BOOL WINAPI HandlerRoutine( _In_ DWORD dwCtrlType )
+---------------------------------------------------
+
+[Pending]
+
+--------------------------------------------------------------
+BOOL WINAPI PeekConsoleInput( _In_ HANDLE hConsoleInput, _Out_
+  PINPUT_RECORD lpBuffer, _In_ DWORD nLength, _Out_
+  LPDWORD lpNumberOfEventsRead )
+--------------------------------------------------------------
+
+[Pending]
+
+--------------------------------------------------------------
+BOOL WINAPI ReadConsole( _In_ HANDLE hConsoleInput, _Out_
+  LPVOID lpBuffer, _In_ DWORD nNumberOfCharsToRead, _Out_
+  LPDWORD lpNumberOfCharsRead, _In_opt_ LPVOID pInputControl )
+--------------------------------------------------------------
+
+[Pending]
+
+--------------------------------------------------------------
+BOOL WINAPI ReadConsoleInput( _In_ HANDLE hConsoleInput, _Out_
+  PINPUT_RECORD lpBuffer, _In_ DWORD nLength, _Out_
+  LPDWORD lpNumberOfEventsRead )
+--------------------------------------------------------------
+
+[Pending]
+
+----------------------------------------------------------------
+BOOL WINAPI ReadConsoleOutput( _In_ HANDLE hConsoleOutput, _Out_
+  PCHAR_INFO lpBuffer, _In_ COORD dwBufferSize, _In_
+  COORD dwBufferCoord, _Inout_ PSMALL_RECT lpReadRegion )
+----------------------------------------------------------------
+
+[Pending]
+
+-----------------------------------------------------------------------
+BOOL WINAPI ReadConsoleOutputAttribute( _In_ HANDLE hConsoleOutput,
+  _Out_ LPWORD lpAttribute, _In_ DWORD nLength, _In_ COORD dwReadCoord,
+  _Out_ LPDWORD lpNumberOfAttrsRead )
+-----------------------------------------------------------------------
+
+[Pending]
+
+-----------------------------------------------------------------------
+BOOL WINAPI ReadConsoleOutputCharacter( _In_ HANDLE hConsoleOutput,
+  _Out_ LPTSTR lpCharacter, _In_ DWORD nLength, _In_ COORD dwReadCoord,
+  _Out_ LPDWORD lpNumberOfCharsRead )
+-----------------------------------------------------------------------
+
+[Pending]
 
