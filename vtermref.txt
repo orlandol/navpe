@@ -1,9 +1,9 @@
 
-=======================
-Win32 Console Reference
------------------------
-  Updated: 2022-05-09
-=======================
+================================
+Win32 Virtual Terminal Reference
+--------------------------------
+             Updated: 2022-05-10
+================================
 
 A reference for Psueodconsole (virtual terminal) API calls,
   intended to be clear and self-contained.

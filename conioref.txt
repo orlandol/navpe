@@ -2,7 +2,7 @@
 =======================
 Win32 Console Reference
 -----------------------
-  Updated: 2022-05-09
+    Updated: 2022-05-10
 =======================
 
 A reference for Win32 Console API calls, intended to be
@@ -498,6 +498,164 @@ BOOL WINAPI ReadConsoleOutputCharacter( _In_ HANDLE hConsoleOutput,
   _Out_ LPTSTR lpCharacter, _In_ DWORD nLength, _In_ COORD dwReadCoord,
   _Out_ LPDWORD lpNumberOfCharsRead )
 -----------------------------------------------------------------------
+
+[Pending]
+
+--------------------------------------------------------------------
+BOOL WINAPI ScrollConsoleScreenBuffer( _In_ HANDLE hConsoleOutput,
+  _In_ const SMALL_RECT *lpScrollRectangle, _In_opt_
+  const SMALL_RECT *lpClipRectangle, _In_ COORD dwDestinationOrigin,
+  _In_ const CHAR_INFO *lpFill )
+--------------------------------------------------------------------
+
+[Pending]
+
+----------------------------------------------------------------------
+BOOL WINAPI SetConsoleActiveScreenBuffer( _In_ HANDLE hConsoleOutput )
+----------------------------------------------------------------------
+
+[Pending]
+
+-------------------------------------------------
+BOOL WINAPI SetConsoleCP( _In_ UINT wCodePageID )
+-------------------------------------------------
+
+[Pending]
+
+--------------------------------------------------
+BOOL WINAPI SetConsoleCtrlHandler( _In_opt_
+  PHANDLER_ROUTINE HandlerRoutine, _In_ BOOL Add )
+--------------------------------------------------
+
+[Pending]
+
+------------------------------------------------------------------
+BOOL WINAPI SetConsoleCursorInfo( _In_ HANDLE hConsoleOutput, _In_
+  const CONSOLE_CURSOR_INFO *lpConsoleCursorInfo )
+------------------------------------------------------------------
+
+[Pending]
+
+-----------------------------------------------------------------
+BOOL WINAPI SetConsoleCursorPosition( _In_ HANDLE hConsoleOutput,
+  _In_ COORD dwCursorPosition )
+-----------------------------------------------------------------
+
+[Pending]
+
+-------------------------------------------------------------------
+BOOL WINAPI SetConsoleDisplayMode( _In_ HANDLE hConsoleOutput, _In_
+  DWORD dwFlags, _Out_opt_ PCOORD lpNewScreenBufferDimensions )
+-------------------------------------------------------------------
+
+[Pending]
+
+----------------------------------------------
+BOOL WINAPI SetConsoleHistoryInfo( _In_
+  PCONSOLE_HISTORY_INFO lpConsoleHistoryInfo )
+----------------------------------------------
+
+[Pending]
+
+-------------------------------------------------------
+BOOL WINAPI SetConsoleMode( _In_ HANDLE hConsoleHandle,
+  _In_ DWORD dwMode )
+-------------------------------------------------------
+
+[Pending]
+
+-------------------------------------------------------
+BOOL WINAPI SetConsoleOutputCP( _In_ UINT wCodePageID )
+-------------------------------------------------------
+
+[Pending]
+
+---------------------------------------------------------------------
+BOOL WINAPI SetConsoleScreenBufferInfoEx( _In_ HANDLE hConsoleOutput,
+  _In_ PCONSOLE_SCREEN_BUFFER_INFOEX lpConsoleScreenBufferInfoEx )
+---------------------------------------------------------------------
+
+[Pending]
+
+-------------------------------------------------------------------
+BOOL WINAPI SetConsoleScreenBufferSize( _In_ HANDLE hConsoleOutput,
+  _In_ COORD dwSize )
+-------------------------------------------------------------------
+
+[Pending]
+
+----------------------------------------------------------------
+BOOL WINAPI SetConsoleTextAttribute( _In_ HANDLE hConsoleOutput,
+  _In_ WORD wAttributes )
+----------------------------------------------------------------
+
+[Pending]
+
+----------------------------------------------------------
+BOOL WINAPI SetConsoleTitle( _In_ LPCTSTR lpConsoleTitle )
+----------------------------------------------------------
+
+[Pending]
+
+---------------------------------------------------------------
+BOOL WINAPI SetConsoleWindowInfo( _In_ HANDLE hConsoleOutput,
+  _In_ BOOL bAbsolute, _In_ const SMALL_RECT *lpConsoleWindow )
+---------------------------------------------------------------
+
+[Pending]
+
+----------------------------------------------------------------
+BOOL WINAPI SetCurrentConsoleFontEx( _In_ HANDLE hConsoleOutput,
+  _In_ BOOL bMaximumWindow, _In_
+  PCONSOLE_FONT_INFOEX lpConsoleCurrentFontEx )
+----------------------------------------------------------------
+
+[Pending]
+
+----------------------------------------------------------------------
+BOOL WINAPI SetStdHandle( _In_ DWORD nStdHandle, _In_ HANDLE hHandle )
+----------------------------------------------------------------------
+
+[Pending]
+
+----------------------------------------------------------
+BOOL WINAPI WriteConsole( _In_ HANDLE hConsoleOutput, _In_
+  const VOID *lpBuffer, _In_ DWORD nNumberOfCharsToWrite,
+  _Out_opt_ LPDWORD lpNumberOfCharsWritten,
+  _Reserved_ LPVOID lpReserved )
+----------------------------------------------------------
+
+[Pending]
+
+---------------------------------------------------------
+BOOL WINAPI WriteConsoleInput( _In_ HANDLE hConsoleInput,
+  _In_ const INPUT_RECORD *lpBuffer, _In_ DWORD nLength,
+  _Out_ LPDWORD lpNumberOfEventsWritten )
+---------------------------------------------------------
+
+[Pending]
+
+---------------------------------------------------------------
+BOOL WINAPI WriteConsoleOutput( _In_ HANDLE hConsoleOutput,
+  _In_ const CHAR_INFO *lpBuffer, _In_ COORD dwBufferSize,
+  _In_ COORD dwBufferCoord, _Inout_ PSMALL_RECT lpWriteRegion )
+---------------------------------------------------------------
+
+[Pending]
+
+--------------------------------------------------------------------
+BOOL WINAPI WriteConsoleOutputAttribute( _In_ HANDLE hConsoleOutput,
+  _In_ const WORD *lpAttribute, _In_ DWORD nLength, _In_
+  COORD dwWriteCoord, _Out_ LPDWORD lpNumberOfAttrsWritten )
+--------------------------------------------------------------------
+
+[Pending]
+
+------------------------------------------------------------------------
+BOOL WINAPI WriteConsoleOutputCharacter( _In_ HANDLE hConsoleOutput,
+  _In_ LPCTSTR lpCharacter, _In_ DWORD nLength, _In_ COORD dwWriteCoord,
+  _Out_ LPDWORD lpNumberOfCharsWritten )
+------------------------------------------------------------------------
 
 [Pending]
 
